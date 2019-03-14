@@ -1,5 +1,6 @@
 package com.example.recyclerviewexam;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,25 +9,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.sql.BatchUpdateException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class MyRecyclerAdaptet extends RecyclerView.Adapter<MyRecyclerAdaptet.ViewHolder> {
+public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
     private List<CardItem>  mDataList;
+    private MyOnClickListener mListener;
 
-    public interface MyRecyclerViewClickListener {
-        void onItemClicked(int position);
-        void onShareButtonClicked(int position);
-        void onLearnMoreBttonClicked(int position);
+    private Set<Integer> mSelectedPositionSet = new HashSet<>();
+
+    public void setSelect(int position) {
+        if (mSelectedPositionSet.contains(position)) {
+            mSelectedPositionSet.remove(position);
+        } else {
+            mSelectedPositionSet.add(position);
+        }
     }
-    private MyRecyclerViewClickListener mListener;
 
-    public MyRecyclerAdaptet(MyRecyclerViewClickListener listener) {
+    public void setOnClickListener(MyOnClickListener listener) {
         mListener = listener;
     }
 
-
-    public MyRecyclerAdaptet(List<CardItem> dataList) {
+    public MyRecyclerAdapter(List<CardItem> dataList) {
         mDataList = dataList;
     }
 
@@ -41,28 +46,34 @@ public class MyRecyclerAdaptet extends RecyclerView.Adapter<MyRecyclerAdaptet.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        CardItem item = mDataList.get(position);
+        final CardItem item = mDataList.get(position);
         holder.title.setText(item.getTitle());
         holder.contents.setText(item.getContents());
+
+        if (mSelectedPositionSet.contains(position)) {
+            holder.itemView.setBackgroundColor(Color.RED);
+        } else {
+            holder.itemView.setBackgroundColor(Color.WHITE);
+        }
 
         if(mListener != null) {
             final int pos = position;
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onItemClicked(pos);
+                    mListener.onClick(v, pos, item);
                 }
             });
             holder.more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onLearnMoreBttonClicked(pos);
+                    mListener.onLearnMoreButtonClick(pos);
                 }
             });
             holder.share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onShareButtonClicked(pos);
+                    mListener.onShareButtonClick(item);
                 }
             });
         }

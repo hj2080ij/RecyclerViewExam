@@ -1,7 +1,5 @@
 package com.example.recyclerviewexam;
 
-import java.util.Objects;
-
 public class CardItem {
     private String title;
     private String contents;
@@ -25,5 +23,14 @@ public class CardItem {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("CardItem{");
+        sb.append("title='").append(title).append('\'');
+        sb.append(", contents='").append(contents).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
