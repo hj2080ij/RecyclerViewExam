@@ -4,21 +4,28 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
-        @Override
+public class MainActivity extends AppCompatActivity {
+
+    private MyRecyclerAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView = findViewById(R.id.recyclerView);
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
+        mRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -26,19 +33,9 @@ public class MainActivity extends AppCompatActivity{
         });
 
 
-
-
-
-
-
-
-
-
-
-
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL
         );
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         List<CardItem> dataList = new ArrayList<>();
         dataList.add(new CardItem("히어로", "RPG"));
@@ -56,14 +53,14 @@ public class MainActivity extends AppCompatActivity{
         dataList.add(new CardItem("젠틀", "카톡"));
         dataList.add(new CardItem("젠틀", "카톡"));
 
-        final MyRecyclerAdapter adapter = new MyRecyclerAdapter(dataList);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new MyRecyclerAdapter(dataList);
+        mRecyclerView.setAdapter(mAdapter);
 
-        adapter.setOnClickListener(new MyRecyclerAdapter.MyOnClickListener() {
+        mAdapter.setOnClickListener(new MyRecyclerAdapter.MyOnClickListener() {
             @Override
             public void onClick(View v, int position, CardItem cardItem) {
-                adapter.setSelect(position);
-                adapter.notifyItemChanged(position);
+                mAdapter.setSelect(position);
+                mAdapter.notifyItemChanged(position);
             }
 
             @Override
@@ -78,17 +75,33 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onLongClick(View v, CardItem item) {
-                adapter.removeItem(item);
+                mAdapter.removeItem(item);
 
                 int position = (int) v.getTag();
-                adapter.notifyItemRemoved(position);
+
+                mAdapter.notifyItemRemoved(position);
             }
         });
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
 
-
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                mAdapter.addItem(new CardItem("추가한 거", "추가한 내용"), 3);
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

@@ -47,6 +47,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         }
     }
 
+    public void addItem(CardItem item, int index) {
+        mDataList.add(index, item);
+    }
+
+    public void addItem(CardItem item) {
+        addItem(item, 0);
+    }
+
     public void setOnClickListener(MyOnClickListener listener) {
         mListener = listener;
     }
