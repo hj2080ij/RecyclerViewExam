@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity{
         );
         recyclerView.setLayoutManager(layoutManager);
 
-
         List<CardItem> dataList = new ArrayList<>();
         dataList.add(new CardItem("히어로", "RPG"));
         dataList.add(new CardItem("닷지", "노잼게임"));
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
         final MyRecyclerAdapter adapter = new MyRecyclerAdapter(dataList);
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnClickListener(new MyOnClickListener() {
+        adapter.setOnClickListener(new MyRecyclerAdapter.MyOnClickListener() {
             @Override
             public void onClick(View v, int position, CardItem cardItem) {
                 adapter.setSelect(position);
@@ -75,6 +74,14 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onLearnMoreButtonClick(int position) {
                 Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongClick(View v, CardItem item) {
+                adapter.removeItem(item);
+
+                int position = (int) v.getTag();
+                adapter.notifyItemRemoved(position);
             }
         });
 

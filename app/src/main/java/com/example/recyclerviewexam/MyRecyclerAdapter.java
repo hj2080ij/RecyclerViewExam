@@ -14,10 +14,30 @@ import java.util.List;
 import java.util.Set;
 
 public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
+    public interface MyOnClickListener {
+        void onClick(View v, int position, CardItem cardItem);
+
+        void onShareButtonClick(CardItem cardItem);
+
+        void onLearnMoreButtonClick(int position);
+
+        void onLongClick(View v, CardItem item);
+    }
+
+
+
     private List<CardItem>  mDataList;
     private MyOnClickListener mListener;
 
     private Set<Integer> mSelectedPositionSet = new HashSet<>();
+
+    public void removeItem(int position) {
+        mDataList.remove(position);
+    }
+
+    public void removeItem(CardItem item) {
+        mDataList.remove(item);
+    }
 
     public void setSelect(int position) {
         if (mSelectedPositionSet.contains(position)) {
@@ -74,6 +94,14 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     mListener.onShareButtonClick(item);
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    v.setTag(pos);
+                    mListener.onLongClick(v, item);
+                    return true;
                 }
             });
         }
