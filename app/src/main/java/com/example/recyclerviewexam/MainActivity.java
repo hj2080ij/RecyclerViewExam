@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnClickListener(new MyRecyclerAdapter.MyOnClickListener() {
             @Override
             public void onClick(View v, int position, CardItem cardItem) {
-                mAdapter.setSelect(position);
+                mAdapter.setSelect(cardItem);
                 mAdapter.notifyItemChanged(position);
             }
 
@@ -96,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                mAdapter.addItem(new CardItem("추가한 거", "추가한 내용"), 3);
-                mAdapter.notifyDataSetChanged();
-                mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                mAdapter.addItem(new CardItem("추가한 거", "추가한 내용"), 0);
+                mAdapter.notifyItemInserted(0);
+                mRecyclerView.smoothScrollToPosition(0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

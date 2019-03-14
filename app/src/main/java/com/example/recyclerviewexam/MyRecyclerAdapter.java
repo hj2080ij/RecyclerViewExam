@@ -29,7 +29,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     private List<CardItem>  mDataList;
     private MyOnClickListener mListener;
 
-    private Set<Integer> mSelectedPositionSet = new HashSet<>();
+    private Set<CardItem> mSelectedCardItem = new HashSet<>();
 
     public void removeItem(int position) {
         mDataList.remove(position);
@@ -39,11 +39,11 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         mDataList.remove(item);
     }
 
-    public void setSelect(int position) {
-        if (mSelectedPositionSet.contains(position)) {
-            mSelectedPositionSet.remove(position);
+    public void setSelect(CardItem item) {
+        if (mSelectedCardItem.contains(item)) {
+            mSelectedCardItem.remove(item);
         } else {
-            mSelectedPositionSet.add(position);
+            mSelectedCardItem.add(item);
         }
     }
 
@@ -78,24 +78,23 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         holder.title.setText(item.getTitle());
         holder.contents.setText(item.getContents());
 
-        if (mSelectedPositionSet.contains(position)) {
+        if (mSelectedCardItem.contains(item)) {
             holder.itemView.setBackgroundColor(Color.RED);
         } else {
             holder.itemView.setBackgroundColor(Color.WHITE);
         }
 
         if(mListener != null) {
-            final int pos = position;
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onClick(v, pos, item);
+                    mListener.onClick(v, holder.getAdapterPosition(), item);
                 }
             });
             holder.more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onLearnMoreButtonClick(pos);
+                    mListener.onLearnMoreButtonClick(holder.getAdapterPosition());
                 }
             });
             holder.share.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +106,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    v.setTag(pos);
+                    v.setTag(holder.getAdapterPosition());
                     mListener.onLongClick(v, item);
                     return true;
                 }
